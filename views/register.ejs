@@ -1,0 +1,29 @@
+
+
+    <%- include('head') -%>
+
+    <div class="box" id="heading">
+    <h1> <%= listTitle %></h1>
+    <h4>to Add your Task</h4>
+    </div>
+
+    <div class="box form">
+        <form action="/register" method="post">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="firstname" required>
+        
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lastname" required>
+        
+            <label for="country">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="country">Password</label>
+            <input type="password" id="password" name="password" required>
+          
+            <input type="submit" value="Submit">
+          </form>
+          <p>Already have account? <a href="http://localhost:1111/login">Sign In</a></p>
+    </div>
+   
+    <%- include('footer') -%>
