@@ -1,18 +1,35 @@
 const express = require('express')
 const bodyParser= require('body-parser');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
 const date = require('./views/date');
+
+// initalize sequelize with session store
+var MySQLStore = require('express-mysql-session')(session);
 
 const authRouter = require('./routes/auth');
 const listRouter = require('./routes/list');
 
 
 const app = express()
- let workItem = [];   
+const port =process.env.PORT || 1111;
 
 app.set("view engine", 'ejs');
 
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.json());
 app.use(express.static('public'));
+
+app.use(cookieParser('secretStringForCookies'));
+app.use(session({
+    secret:'secretStringForSession',
+    cookie:{maxAge:60000},
+    resave: true,
+    saveUninitialized: true,
+}));
+
+app.use(flash());
 
 const db = require('./model/index');
 (async () => {
@@ -25,19 +42,19 @@ app.use('/', authRouter);
 app.use('/', listRouter);
 
 
-app.get('/list', (req, res)=>{
-    let day = date();
-    const errors = "Opps! You did not add a task";
-     db.items.findAll({})
-     .then(item=>{
-         // console.log(item[0].todo, "here")
-     res.render('list', {listTitle:day, newListItems:item, error:errors});
-     })
-     .catch(err=>{
-     console.log(err)
+// app.get('/list', (req, res)=>{
+//     let day = date();
+//     // const errors = "Opps! You did not add a task";
+//      db.items.findAll({})
+//      .then(item=>{
+//             const firstName= req.flash('user', 'Jibrin');
+//      res.render('list', {listTitle:day, newListItems:item, firstName:firstName});
+//      })
+//      .catch(err=>{
+//      console.log(err)
  
-     })
- });
+//      })
+//  });
 
 
 
@@ -51,7 +68,6 @@ app.post('/work', (req, res)=>{
     workItem.push(item);
     res.redirect('/work')
 })
-const PORT = 1111
-app.listen(PORT, ()=>{
-    console.log("server is listening on port " + PORT)
+app.listen(port, ()=>{
+    console.log("server is listening on port " + port)
 })

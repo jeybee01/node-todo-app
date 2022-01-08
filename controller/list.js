@@ -4,28 +4,26 @@ const date = require('../views/date')
 
 exports.controllers ={
    createUser:async (req, res)=>{
-      // const day = date()
       const userInfo = req.body;
       const hashPassword =userInfo.password;
       const email = userInfo.email;
        db.users.findOne({where:{email:email}})
                 .then(async(user)=>{
             if(!user){
-               // console.log(user);
             userInfo.password = await bcrypt.hash(hashPassword, 8);
-          return  db.users.create(userInfo)
+            return  db.users.create(userInfo)
                .then((data)=>{
-                  console.log(data,'redirect login');
-                  res.redirect('list');
+                    req.flash('user', data.firstname);
+                   res.redirect('list');
             })
                .catch((err)=>{
                   console.log(err)
                });
             }
             else{
-             //  res.render('register', {listTitle:day}); 
-             console.log('user with this email exist, sign Up')
-             res.redirect('/');
+             console.log('user with this email exist, sign Up');
+             req.flash('users','user with this email already exist');
+               return  res.redirect('/');
             }
                      }) 
          .catch((err)=>{
@@ -36,24 +34,21 @@ exports.controllers ={
 
    signIn: (req, res)=>{
       const {email, password} = req.body;
-      const day = "Sign In";
-      let  signinError = "";
-      console.log(email, password);
          db.users.findOne({where:{email:email}})
          .then( async (user)=>{
             console.log(user)
-            
             if(!user){
-                signinError = "Wrong email or Password";
-               return  res.render('login', {listTitle:day, signinError:signinError});
+              req.flash('user', "Wrong email or Password");
+               return res.redirect('/login')
             }
             else{
                const isHashPassword = await bcrypt.compare(password, user.password);
                if(!isHashPassword){
-                    signinError = "Wrong email or Password";
-                  return  res.render('login', {listTitle:day, signinError:signinError});
+                  req.flash('user', "Wrong email or Password");
+                  return res.redirect('/login')
                }
                else{
+                  req.flash('user', user.firstname);
                   return res.redirect('/list');
                }
             }

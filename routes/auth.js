@@ -4,16 +4,18 @@ const router = express.Router();
 const {controllers} = require('../controller/list');
 
 router.get('/', (req, res)=>{
-    let day = `sign-Up`
-     res.render('register', {listTitle:day})
+    console.log(req.session);
+    let tittleName = `sign-Up`;
+    const regMessage = req.flash('users');
+     res.render('register', {listTitle:tittleName, regMessage:regMessage});
  });
 
  router.post('/register', controllers.createUser);
 
  router.get('/login', (req, res)=>{
-    let day = `sign-In`
-  let  signinError = "";
-     res.render('login', {listTitle:day, signinError:signinError})
+    let tittleName = `sign-In`;
+    const signinError= req.flash('user')
+     res.render('login', {listTitle:tittleName, signinError:signinError})
  });
 
  router.post('/login', controllers.signIn);
