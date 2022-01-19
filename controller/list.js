@@ -7,55 +7,49 @@ exports.controllers ={
       const userInfo = req.body;
       const hashPassword =userInfo.password;
       const email = userInfo.email;
-       db.users.findOne({where:{email:email}})
-                .then(async(user)=>{
-            if(!user){
-            userInfo.password = await bcrypt.hash(hashPassword, 8);
-            return  db.users.create(userInfo)
-               .then((data)=>{
-                    req.flash('user', data.firstname);
-                   res.redirect('list');
-            })
-               .catch((err)=>{
-                  console.log(err)
-               });
-            }
+        const user = await db.users.findOne({where:{email:email}});
+
+               if(user){
+                  req.flash('info', "User with this Email Already Exist");
+                 return  res.redirect('/');
+               }
             else{
-             console.log('user with this email exist, sign Up');
-             req.flash('users','user with this email already exist');
-               return  res.redirect('/');
+                  userInfo.password = await bcrypt.hash(hashPassword, 8);
+                  const data = await db.users.create(userInfo);
+                  if(!data){
+                     return res.redirect('/');
+                  }
+                  else{
+                     req.flash('info', 'User Created');
+                     return res.redirect('/login');
+                  }
+                 
+               
             }
-                     }) 
-         .catch((err)=>{
-            console.log(err.message);
-         });
+   
      
    },
 
-   signIn: (req, res)=>{
+   signIn: async (req, res)=>{
       const {email, password} = req.body;
-         db.users.findOne({where:{email:email}})
-         .then( async (user)=>{
-            console.log(user)
-            if(!user){
-              req.flash('user', "Wrong email or Password");
+        const user = await  db.users.findOne({where:{email:email}})
+        console.log(user)
+            if(!user || user === null){
+              req.flash('info', "Provided Wrong Email!");
                return res.redirect('/login')
             }
             else{
                const isHashPassword = await bcrypt.compare(password, user.password);
                if(!isHashPassword){
-                  req.flash('user', "Wrong email or Password");
-                  return res.redirect('/login')
+                  req.flash('info', 'Provided Wrong Password !');
+                  return res.redirect('/login');
                }
                else{
-                  req.flash('user', user.firstname);
+                  req.flash('info', user.firstname);
                   return res.redirect('/list');
                }
-            }
-         })
-         .catch((err)=>{
-            console.log(err)
-         })
+            }      
+         
    },
    findAllList: (req, res)=>{       
       const errors ="Opps! You did not add a task" ;

@@ -17,7 +17,7 @@ const port =process.env.PORT || 1111;
 
 app.set("view engine", 'ejs');
 
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -25,8 +25,8 @@ app.use(cookieParser('secretStringForCookies'));
 app.use(session({
     secret:'secretStringForSession',
     cookie:{maxAge:60000},
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
 }));
 
 app.use(flash());
@@ -40,21 +40,6 @@ const db = require('./model/index');
 
 app.use('/', authRouter);
 app.use('/', listRouter);
-
-
-// app.get('/list', (req, res)=>{
-//     let day = date();
-//     // const errors = "Opps! You did not add a task";
-//      db.items.findAll({})
-//      .then(item=>{
-//             const firstName= req.flash('user', 'Jibrin');
-//      res.render('list', {listTitle:day, newListItems:item, firstName:firstName});
-//      })
-//      .catch(err=>{
-//      console.log(err)
- 
-//      })
-//  });
 
 
 

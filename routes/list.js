@@ -10,9 +10,7 @@ const db = require('../model/index');
    let day = date();
     db.items.findAll({})
     .then(item=>{
-           const firstName= req.flash('user');
-     return res.render('list', {listTitle:day, newListItems:item, firstName:firstName});
-      // res.redirect('/list')
+     return res.render('list', {listTitle:day, newListItems:item,  Message:req.flash('info')});
     })
     .catch(err=>{
     console.log(err)

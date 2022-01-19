@@ -6,11 +6,19 @@
     <h1> <%= listTitle %></h1>
     </div>
     <div class="info" >
-        <p>Welcome to your todo list <%= firstName %></p>
+       <div class="left">
+        <p>Welcome to your todo list <span style="font-size: 20px; font-weight: bold;" ><%= Message %></span> !</p>
         <ol>
         <li>Hit the + button to add a new Item.</li>
         <li>Hit the [] checkbox to delete an Item.</li>
-    </ol></div>
+    </ol>
+       </div>
+    <div class="right">
+        <form action="/logout" method="post">
+            <button type="submit" name="logout" >Logout</button>
+        </form>
+    </div>
+</div>
 
     <div class="box">
         <% for(let i=0; i<newListItems.length; i++) { %>

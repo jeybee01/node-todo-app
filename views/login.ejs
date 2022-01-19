@@ -4,10 +4,14 @@
 
     <div class="box" id="heading">
     <h1> <%= listTitle %></h1>
-    <h4> Sign In and Add your Task</h4>
-    <h4 style="color: red;"><%= signinError %></h4>
+    <h4> Sign In To Add Your Task</h4>
+   </div>
 
-    </div>
+   <% if(Message> 0) {%> 
+    <div class="info-message">
+        <h4><%= Message  %></h4>
+     </div>
+     <% } %>
 
     <div class="box form">
         <form action="/login" method="post">
@@ -16,7 +20,7 @@
             <input type="email" id="email" name="email" required>
 
             <label for="country">Password</label>
-            <input type="password" id="password" name="password" required placeholder="*****">
+            <input type="password" id="password" name="password" required>
           
             <input type="submit" value="Submit">
           </form>
